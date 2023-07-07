@@ -1,8 +1,8 @@
 # STUDENT MANAGEMENT SYSTEM APPLICATION
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QGridLayout, QLineEdit, \
-    QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QComboBox, QPushButton
+    QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QComboBox, QPushButton, QToolBar
 import sys
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QIcon
 import sqlite3
 from PyQt6.QtCore import Qt
 
@@ -11,20 +11,22 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Student Management System')
+        self.setMinimumSize(500, 400)
 
         # Adding the Menu Bar
         file_menu_item = self.menuBar().addMenu('&File')
         help_menu_item = self.menuBar().addMenu('&Help')
         search_menu_item = self.menuBar().addMenu('&Search')
 
-        add_student_action = QAction('Add Student', self)  # Adding actions to the menu bar
+        add_student_action = QAction(QIcon('Icons/icons/add.png'), 'Add Student',
+                                     self)  # Adding actions to the menu bar
         add_student_action.triggered.connect(self.insert)
         file_menu_item.addAction(add_student_action)
 
         about_action = QAction('About', self)
         file_menu_item.addAction(about_action)
 
-        search = QAction('Search', self)
+        search = QAction(QIcon('Icons/icons/search.png'), 'Search', self)
         search.triggered.connect(self.search)
         search_menu_item.addAction(search)
 
@@ -34,6 +36,14 @@ class MainWindow(QMainWindow):
         self.table.setHorizontalHeaderLabels(('Id', 'Name', 'Course', 'Mobile'))
         self.table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.table)
+
+        # Creating the toolbar element
+        toolbar = QToolBar()
+        toolbar.setMovable(True)
+        self.addToolBar(toolbar)  # Adding the toolbar to this window
+
+        toolbar.addAction(add_student_action)
+        toolbar.addAction(search)
 
     def load_data(self):
         connection = sqlite3.connect('database.db')  # Connecting to the database
