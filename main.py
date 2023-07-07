@@ -1,7 +1,7 @@
 # STUDENT MANAGEMENT SYSTEM APPLICATION
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QGridLayout, QLineEdit, \
     QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QComboBox, QPushButton, QToolBar, \
-    QStatusBar
+    QStatusBar,QMessageBox
 import sys
 from PyQt6.QtGui import QAction, QIcon
 import sqlite3
@@ -98,7 +98,41 @@ class MainWindow(QMainWindow):
 
 
 class DeleteDialog(QDialog):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Delete Student Data')
+
+        layout = QGridLayout()
+
+        confirmation = QLabel("Are you sure you want to delete?")
+        yes = QPushButton("Yes")
+        no = QPushButton('No')
+
+        layout.addWidget(confirmation, 0, 0, 1, 2)
+        layout.addWidget(yes, 1, 0)
+        layout.addWidget(no, 1, 1)
+        self.setLayout(layout)
+
+        yes.clicked.connect(self.delete_student)
+
+    def delete_student(self):
+        index = system.table.currentRow()
+        student_id = system.table.item(index, 0).text()
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('DELETE from student WHERE id=?', (student_id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        system.load_data()
+
+        self.close()
+
+        confirmation_widget = QMessageBox()
+        confirmation_widget.title('Success')
+        confirmation_widget.setText('The Record was deleted successfully')
+        confirmation_widget.exec()
+        
 
 
 class EditDialog(QDialog):
@@ -113,7 +147,7 @@ class EditDialog(QDialog):
         # Get student name from selected row
         index = system.table.currentRow()
         student_name_selected = system.table.item(index, 1).text()  # Name column used to get the value
-        self.student_id = system.table.item(index,0).text() # Getting the ID
+        self.student_id = system.table.item(index, 0).text()  # Getting the ID
 
         # Adding Widgets (Student Name)
         self.student_name = QLineEdit(student_name_selected)
@@ -149,11 +183,11 @@ class EditDialog(QDialog):
         cursor = connection.cursor()
         cursor.execute('UPDATE students SET name=?,course=?,mobile=? WHERE id =?',
                        (self.student_name.text(), self.course_name.itemText(self.course_name.currentIndex()),
-                        self.mobile.text(),self.student_id))
+                        self.mobile.text(), self.student_id))
         connection.commit()
         cursor.close()
         connection.close()
-        system.load_data() # To immediately refresh the table data
+        system.load_data()  # To immediately refresh the table data
 
 
 class InsertDialog(QDialog):  # The Insert Dialog window
