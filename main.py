@@ -1,7 +1,7 @@
 # STUDENT MANAGEMENT SYSTEM APPLICATION
 from PyQt6.QtWidgets import QApplication, QVBoxLayout, QLabel, QWidget, QGridLayout, QLineEdit, \
     QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QComboBox, QPushButton, QToolBar, \
-    QStatusBar,QMessageBox
+    QStatusBar, QMessageBox
 import sys
 from PyQt6.QtGui import QAction, QIcon
 import sqlite3
@@ -96,6 +96,18 @@ class MainWindow(QMainWindow):
         dialog = DeleteDialog()
         dialog.exec()
 
+    def about(self):
+        dialog = AboutDialog()
+        dialog.exec()
+
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('About')
+        content = "This is a Student Management System developed using python PyQt6 and SQLite"
+        self.setText(content)
+
 
 class DeleteDialog(QDialog):
     def __init__(self):
@@ -132,7 +144,6 @@ class DeleteDialog(QDialog):
         confirmation_widget.title('Success')
         confirmation_widget.setText('The Record was deleted successfully')
         confirmation_widget.exec()
-        
 
 
 class EditDialog(QDialog):
