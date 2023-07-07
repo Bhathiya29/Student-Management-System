@@ -1,0 +1,10 @@
+
+PROJECT REQUIREMENTS
+
+1. View (Id,Name,Course,PhoneNo)
+2. Insert Record
+3. Update Record
+4. Delete Record
+5. Search Record
+6. Sort Record
+
